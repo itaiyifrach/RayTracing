@@ -35,21 +35,21 @@ public class Vector {
     }
 
     // create a vector from an array
-    public Vector(double[] data) {
-        n = data.length;
-
-        // defensive copy so that client can't alter our copy of data[]
-        this.data = new double[n];
-        for (int i = 0; i < n; i++)
-            this.data[i] = data[i];
-    }
+//    public Vector(double[] data) {
+//        n = data.length;
+//
+//        // defensive copy so that client can't alter our copy of data[]
+//        this.data = new double[n];
+//        for (int i = 0; i < n; i++)
+//            this.data[i] = data[i];
+//    }
 
     // create a vector from either an array or a vararg list
     // this constructor uses Java's vararg syntax to support
     // a constructor that takes a variable number of arguments, such as
     // Vector x = new Vector(1.0, 2.0, 3.0, 4.0);
     // Vector y = new Vector(5.0, 2.0, 4.0, 1.0);
-/*
+
     public Vector(double... data) {
         n = data.length;
 
@@ -58,7 +58,7 @@ public class Vector {
         for (int i = 0; i < n; i++)
             this.data[i] = data[i];
     }
-*/
+
     // return the length of the vector
     public int length() {
         return n;

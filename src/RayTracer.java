@@ -75,7 +75,11 @@ public class RayTracer {
         int lineNum = 0;
         System.out.println("Started parsing scene file " + sceneFileName);
 
-
+        ArrayList<Material> mtls = new ArrayList<>();
+        ArrayList<Sphere> spheres  = new ArrayList<>();
+        ArrayList<Plane> planes = new ArrayList<>();
+        ArrayList<Triangle> triangles = new ArrayList<>();
+        ArrayList<Light> lights = new ArrayList<>();
 
         while ((line = r.readLine()) != null)
         {
@@ -94,7 +98,10 @@ public class RayTracer {
 
                 if (code.equals("cam"))
                 {
-                    // Add code here to parse camera parameters
+                    Camera camera = new Camera(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
+                                    new Vector(Double.parseDouble(params[3]), Double.parseDouble(params[4]), Double.parseDouble(params[5])),
+                                    new Vector(Double.parseDouble(params[6]), Double.parseDouble(params[7]), Double.parseDouble(params[8])),
+                                    Float.parseFloat(params[9]), Float.parseFloat(params[10]));
 
                     System.out.println(String.format("Parsed camera parameters (line %d)", lineNum));
                 }
@@ -106,37 +113,46 @@ public class RayTracer {
                 }
                 else if (code.equals("mtl"))
                 {
-                    // Add code here to parse material parameters
+                    Material mtr = new Material(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
+                            new Vector(Double.parseDouble(params[3]), Double.parseDouble(params[4]), Double.parseDouble(params[5])),
+                            new Vector(Double.parseDouble(params[6]), Double.parseDouble(params[7]), Double.parseDouble(params[8])),
+                            Float.parseFloat(params[9]), Float.parseFloat(params[10]));
+                    mtls.add(mtr);
 
                     System.out.println(String.format("Parsed material (line %d)", lineNum));
                 }
                 else if (code.equals("sph"))
                 {
-                    // Add code here to parse sphere parameters
-
-                    // Example (you can implement this in many different ways!):
-                    // Sphere sphere = new Sphere();
-                    // sphere.setCenter(params[0], params[1], params[2]);
-                    // sphere.setRadius(params[3]);
-                    // sphere.setMaterial(params[4]);
+                    Sphere sph = new Sphere(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
+                            Float.parseFloat(params[3]), Integer.parseInt(params[4]));
+                    spheres.add(sph);
 
                     System.out.println(String.format("Parsed sphere (line %d)", lineNum));
                 }
                 else if (code.equals("pln"))
                 {
-                    // Add code here to parse plane parameters
+                    Plane pln = new Plane(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
+                            Integer.parseInt(params[3]), Integer.parseInt(params[4]));
+                    planes.add(pln);
 
                     System.out.println(String.format("Parsed plane (line %d)", lineNum));
                 }
                 else if (code.equals("trg"))
                 {
-                    // Add code here to parse cylinder parameters
+                    Triangle trg = new Triangle(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
+                            new Vector(Double.parseDouble(params[3]), Double.parseDouble(params[4]), Double.parseDouble(params[5])),
+                            new Vector(Double.parseDouble(params[6]), Double.parseDouble(params[7]), Double.parseDouble(params[8])),
+                            Integer.parseInt(params[9]));
+                    triangles.add(trg);
 
                     System.out.println(String.format("Parsed cylinder (line %d)", lineNum));
                 }
                 else if (code.equals("lgt"))
                 {
-                    // Add code here to parse light parameters
+                    Light lgt = new Light(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
+                            new Vector(Double.parseDouble(params[3]), Double.parseDouble(params[4]), Double.parseDouble(params[5])),
+                            Float.parseFloat(params[6]), Float.parseFloat(params[7]), Float.parseFloat(params[8]));
+                    lights.add(lgt);
 
                     System.out.println(String.format("Parsed light (line %d)", lineNum));
                 }
