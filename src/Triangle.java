@@ -16,4 +16,8 @@ public class Triangle implements Surface {
     public double[] findIntersection(Ray ray, RayTracer scene) {
         return null;
     }
+
+    public Vector getNormalVector(Vector vec, RayTracer scene)  {
+        return null;
+    }
 }

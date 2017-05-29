@@ -39,4 +39,15 @@ public class Sphere implements Surface {
         t[1] = t_ca + t_hc;
         return t;
     }
+
+    public Vector getNormalVector(Vector vec, RayTracer scene)  {
+        // vec == P
+        Vector N = new Vector(vec);
+        // N = P - O
+        N.minus(center );
+        // (N = P - O) / ||P - O||
+        N.direction();
+
+        return N;
+    }
 }
