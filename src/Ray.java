@@ -11,7 +11,7 @@ public class Ray {
         this.dir = dir;
     }
 
-    public Ray constructRayThroughPixel(Camera camera, int i, int j) {
+    public static Ray constructRayThroughPixel(Camera camera, int i, int j) {
         return null;
     }
 }

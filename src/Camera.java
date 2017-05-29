@@ -1,11 +1,11 @@
 
 
 public class Camera {
-    Vector position;
-    Vector lap;
-    Vector uv;
-    float dist;
-    float width;
+    private Vector position;
+    private Vector lap;
+    private Vector uv;
+    private float dist;
+    private float width;
 
     public Camera(Vector position, Vector lap, Vector uv, float dist, float width) {
         this.position = position;

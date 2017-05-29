@@ -1,10 +1,10 @@
 
 
 public class Triangle implements Surface {
-    Vector pos1;
-    Vector pos2;
-    Vector pos3;
-    int mat_idx;
+    private Vector pos1;
+    private Vector pos2;
+    private Vector pos3;
+    private int mat_idx;
 
     public Triangle(Vector pos1, Vector pos2,  Vector pos3, int mat_idx) {
         this.pos1 = pos1;
@@ -13,7 +13,7 @@ public class Triangle implements Surface {
         this.mat_idx = mat_idx;
     }
 
-    public Ray findIntersection(Ray ray, RayTracer scene) {
+    public Vector findIntersection(Ray ray, RayTracer scene) {
         return null;
     }
 }

@@ -19,6 +19,15 @@ public class RayTracer {
 
     public int imageWidth;
     public int imageHeight;
+    private Vector bg_color;    // background color (r, g, b)
+    private int sh_rays;        // root number of shadow rays (N^2 rays will be shot)
+    private int rec_max;        // maximum number of recursions
+    private int ss_level;       // super sampling level
+    private Camera camera;
+    private ArrayList<Surface> surfaces;
+    private ArrayList<Material> materials;
+    private ArrayList<Light> lights;
+
 
     /**
      * Runs the ray tracer. Takes scene file, output image file and image size as input.
@@ -75,11 +84,8 @@ public class RayTracer {
         int lineNum = 0;
         System.out.println("Started parsing scene file " + sceneFileName);
 
-        ArrayList<Material> mtls = new ArrayList<>();
-        ArrayList<Sphere> spheres  = new ArrayList<>();
-        ArrayList<Plane> planes = new ArrayList<>();
-        ArrayList<Triangle> triangles = new ArrayList<>();
-        ArrayList<Light> lights = new ArrayList<>();
+        this.materials = new ArrayList<>();
+        this.lights = new ArrayList<>();
 
         while ((line = r.readLine()) != null)
         {
@@ -98,7 +104,7 @@ public class RayTracer {
 
                 if (code.equals("cam"))
                 {
-                    Camera camera = new Camera(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
+                    this.camera = new Camera(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
                                     new Vector(Double.parseDouble(params[3]), Double.parseDouble(params[4]), Double.parseDouble(params[5])),
                                     new Vector(Double.parseDouble(params[6]), Double.parseDouble(params[7]), Double.parseDouble(params[8])),
                                     Float.parseFloat(params[9]), Float.parseFloat(params[10]));
@@ -117,7 +123,7 @@ public class RayTracer {
                             new Vector(Double.parseDouble(params[3]), Double.parseDouble(params[4]), Double.parseDouble(params[5])),
                             new Vector(Double.parseDouble(params[6]), Double.parseDouble(params[7]), Double.parseDouble(params[8])),
                             Float.parseFloat(params[9]), Float.parseFloat(params[10]));
-                    mtls.add(mtr);
+                    this.materials.add(mtr);
 
                     System.out.println(String.format("Parsed material (line %d)", lineNum));
                 }
@@ -125,7 +131,7 @@ public class RayTracer {
                 {
                     Sphere sph = new Sphere(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
                             Float.parseFloat(params[3]), Integer.parseInt(params[4]));
-                    spheres.add(sph);
+                    this.surfaces.add(sph);
 
                     System.out.println(String.format("Parsed sphere (line %d)", lineNum));
                 }
@@ -133,7 +139,7 @@ public class RayTracer {
                 {
                     Plane pln = new Plane(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
                             Integer.parseInt(params[3]), Integer.parseInt(params[4]));
-                    planes.add(pln);
+                    this.surfaces.add(pln);
 
                     System.out.println(String.format("Parsed plane (line %d)", lineNum));
                 }
@@ -143,7 +149,7 @@ public class RayTracer {
                             new Vector(Double.parseDouble(params[3]), Double.parseDouble(params[4]), Double.parseDouble(params[5])),
                             new Vector(Double.parseDouble(params[6]), Double.parseDouble(params[7]), Double.parseDouble(params[8])),
                             Integer.parseInt(params[9]));
-                    triangles.add(trg);
+                    this.surfaces.add(trg);
 
                     System.out.println(String.format("Parsed cylinder (line %d)", lineNum));
                 }
@@ -152,7 +158,7 @@ public class RayTracer {
                     Light lgt = new Light(new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2])),
                             new Vector(Double.parseDouble(params[3]), Double.parseDouble(params[4]), Double.parseDouble(params[5])),
                             Float.parseFloat(params[6]), Float.parseFloat(params[7]), Float.parseFloat(params[8]));
-                    lights.add(lgt);
+                    this.lights.add(lgt);
 
                     System.out.println(String.format("Parsed light (line %d)", lineNum));
                 }
@@ -166,7 +172,19 @@ public class RayTracer {
         // It is recommended that you check here that the scene is valid,
         // for example camera settings and all necessary materials were defined.
 
-        System.out.println("Finished parsing scene file " + sceneFileName);
+        // TODO: what should we check here??
+        boolean isValid = true;
+        //checking if #materials == #surfaces
+        if (this.materials.size() != this.surfaces.size()) {
+            isValid = false;
+        }
+
+        if (isValid) {
+            System.out.println("Finished parsing scene file " + sceneFileName);
+        }
+        else {
+            System.out.println("Error in parsing scene file " + sceneFileName);
+        }
 
     }
 
@@ -190,6 +208,14 @@ public class RayTracer {
         //
         // Each of the red, green and blue components should be a byte, i.e. 0-255
 
+        // TODO: complete these loops...
+        for (int i = 0; i < this.imageWidth; i++) {
+            for (int j = 0; j < this.imageHeight; j++) {
+                Ray ray = Ray.constructRayThroughPixel(this.camera, i, j);
+                // find intersection and find the closest intersection
+                // get color of pixel (i,j) using rbgData
+            }
+        }
 
         long endTime = System.currentTimeMillis();
         Long renderTime = endTime - startTime;

@@ -1,9 +1,9 @@
 
 
 public class Plane implements Surface {
-    Vector position;
-    int offset;
-    int mat_idx;
+    private Vector position;
+    private int offset;
+    private int mat_idx;
 
     public Plane(Vector position, int offset, int mat_idx) {
         this.position = position;
@@ -11,7 +11,7 @@ public class Plane implements Surface {
         this.mat_idx = mat_idx;
     }
 
-    public Ray findIntersection(Ray ray, RayTracer scene) {
+    public Vector findIntersection(Ray ray, RayTracer scene) {
         return null;
     }
 }

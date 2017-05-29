@@ -3,5 +3,5 @@
  */
 public interface Surface {
 
-    Ray findIntersection(Ray ray, RayTracer scene);
+    Vector findIntersection(Ray ray, RayTracer scene);
 }
