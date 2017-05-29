@@ -13,10 +13,8 @@ public class Sphere implements Surface {
 
     public double[] findIntersection(Ray ray, RayTracer scene) {
         // using geometric method (not algebraic)
-        Vector L = new Vector(center);
-
         // L = O - p0
-        L.minus(scene.getCamera().getPosition());
+        Vector L = center.minus(scene.getCamera().getPosition());
 
         // t_ca = L * V
         double t_ca = L.dot(ray.getDir());
@@ -40,13 +38,11 @@ public class Sphere implements Surface {
         return t;
     }
 
-    public Vector getNormalVector(Vector vec, RayTracer scene)  {
-        // vec == P
-        Vector N = new Vector(vec);
+    public Vector getNormalVector(Vector vec)  {
         // N = P - O
-        N.minus(center );
-        // (N = P - O) / ||P - O||
-        N.direction();
+        Vector N = vec.minus(center);
+        // N = (P - O) / ||P - O||
+        N = N.direction();
 
         return N;
     }

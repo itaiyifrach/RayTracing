@@ -5,5 +5,5 @@ public interface Surface {
 
     double[] findIntersection(Ray ray, RayTracer scene);
 
-    Vector getNormalVector(Vector vec, RayTracer scene);
+    Vector getNormalVector(Vector vec);
 }

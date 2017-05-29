@@ -84,6 +84,19 @@ public class Vector {
         return sum;
     }
 
+    // return the cross product of this Vector a and b
+    public Vector cross(Vector vec) {
+        if (this.length() != vec.length())
+            throw new IllegalArgumentException("dimensions disagree");
+        double[] vecData = new double[n];
+
+        vecData[0] = this.data[1] * vec.data[2] - vec.data[1] * this.data[2];
+        vecData[1] = this.data[2] * vec.data[0] - vec.data[2] * this.data[0];
+        vecData[2] = this.data[0] * vec.data[1] - vec.data[0] * this.data[1];
+
+        return new Vector(vecData);
+    }
+
     // return the Euclidean norm of this Vector
     public double norm() {
         return Math.sqrt(this.dot(this));
@@ -128,7 +141,6 @@ public class Vector {
             c.data[i] = factor * data[i];
         return c;
     }
-
 
     // return the corresponding unit vector
     public Vector direction() {
