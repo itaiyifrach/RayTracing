@@ -15,4 +15,23 @@ public class Camera {
         this.width = width;
     }
 
+    public Vector getPosition() {
+        return position;
+    }
+
+    public Vector getLap() {
+        return lap;
+    }
+
+    public Vector getUv() {
+        return uv;
+    }
+
+    public float getDist() {
+        return dist;
+    }
+
+    public float getWidth() {
+        return width;
+    }
 }

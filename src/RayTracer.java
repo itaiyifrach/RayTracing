@@ -271,4 +271,47 @@ public class RayTracer {
     public static class RayTracerException extends Exception {
         public RayTracerException(String msg) {  super(msg); }
     }
+
+
+    // GETTERS:
+    public int getImageWidth() {
+        return imageWidth;
+    }
+
+    public int getImageHeight() {
+        return imageHeight;
+    }
+
+    public Vector getBg_color() {
+        return bg_color;
+    }
+
+    public int getSh_rays() {
+        return sh_rays;
+    }
+
+    public int getRec_max() {
+        return rec_max;
+    }
+
+    public int getSs_level() {
+        return ss_level;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public ArrayList<Surface> getSurfaces() {
+        return surfaces;
+    }
+
+    public ArrayList<Material> getMaterials() {
+        return materials;
+    }
+
+    public ArrayList<Light> getLights() {
+        return lights;
+    }
 }
+

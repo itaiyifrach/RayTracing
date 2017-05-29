@@ -59,6 +59,16 @@ public class Vector {
             this.data[i] = data[i];
     }
 
+    // copy constructor
+    public Vector(Vector vec) {
+        this.n = vec.n;
+
+        // defensive copy so that client can't alter our copy of data[]
+        this.data = new double[n];
+        for (int i = 0; i < n; i++)
+            this.data[i] = vec.data[i];
+    }
+
     // return the length of the vector
     public int length() {
         return n;
