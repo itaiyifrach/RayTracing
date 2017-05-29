@@ -14,4 +14,12 @@ public class Ray {
     public static Ray constructRayThroughPixel(Camera camera, int i, int j) {
         return null;
     }
+
+    public Vector getStart() {
+        return start;
+    }
+
+    public Vector getDir() {
+        return dir;
+    }
 }

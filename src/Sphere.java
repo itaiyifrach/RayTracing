@@ -11,14 +11,32 @@ public class Sphere implements Surface {
         this.mat_idx = mat_idx;
     }
 
-    public Vector findIntersection(Ray ray, RayTracer scene) {
+    public double[] findIntersection(Ray ray, RayTracer scene) {
         // using geometric method (not algebraic)
-        double[] data = new double[3];
         Vector L = new Vector(center);
 
         // L = O - p0
         L.minus(scene.getCamera().getPosition());
 
-        return null;
+        // t_ca = L * V
+        double t_ca = L.dot(ray.getDir());
+        if (t_ca < 0) {     // no intersection
+            return null;
+        }
+
+        double d_2 = L.dot(L) - (t_ca * t_ca);
+        double r_2 = radius * radius;
+        if (d_2 > r_2) {    // no intersection
+            return null;
+        }
+
+        // two intersection points:
+        // t_hc = sqrt(r^2 - d^2)
+        double t_hc = Math.sqrt(r_2 - d_2);
+
+        double[] t = new double[2];
+        t[0] = t_ca - t_hc;
+        t[1] = t_ca + t_hc;
+        return t;
     }
 }

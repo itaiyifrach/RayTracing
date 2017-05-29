@@ -13,7 +13,7 @@ public class Triangle implements Surface {
         this.mat_idx = mat_idx;
     }
 
-    public Vector findIntersection(Ray ray, RayTracer scene) {
+    public double[] findIntersection(Ray ray, RayTracer scene) {
         return null;
     }
 }
