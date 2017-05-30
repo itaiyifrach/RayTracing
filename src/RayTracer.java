@@ -213,11 +213,19 @@ public class RayTracer {
         // Each of the red, green and blue components should be a byte, i.e. 0-255
 
         // TODO: complete these loops...
+        int mat_idx;
+        double imageRatio = imageHeight / imageWidth;
+        double pixelWidth = camera.getWidth() / imageWidth;
+        double pixelHeight = imageRatio * pixelWidth;
+
         for (int i = 0; i < this.imageWidth; i++) {
             for (int j = 0; j < this.imageHeight; j++) {
-                Ray ray = Ray.constructRayThroughPixel(this.camera, i, j);
+                Ray ray = Ray.constructRayThroughPixel(camera, i, j, imageWidth, imageHeight, pixelWidth, pixelHeight);
+                ray.printRay();
                 // find intersection and find the closest intersection
+                mat_idx = getIntersection(ray);
                 // get color of pixel (i,j) using rbgData
+                
             }
         }
 
@@ -276,6 +284,26 @@ public class RayTracer {
         public RayTracerException(String msg) {  super(msg); }
     }
 
+    public int getIntersection(Ray ray) {
+        Vector p0 = new Vector(camera.getPosition());
+        int mat_idx;
+        double tempDist;
+        Vector hit = surfaces.get(0).findIntersection(ray, this);
+        double minDist = hit.distanceTo(p0);
+        mat_idx = surfaces.get(0).getMaterialIndex();
+
+        // searching for minimum intersection point, and saving the surface material index
+        for (Surface surface : surfaces) {
+            hit = surface.findIntersection(ray, this);
+            tempDist = hit.distanceTo(p0);
+            if (tempDist < minDist) {
+                minDist = tempDist;
+                mat_idx = surface.getMaterialIndex();
+            }
+        }
+
+        return mat_idx;
+    }
 
     // GETTERS:
     public int getImageWidth() {

@@ -12,24 +12,18 @@ public class Triangle implements Surface {
         this.mat_idx = mat_idx;
     }
 
-    public double[] findIntersection(Ray ray, RayTracer scene) {
+    public Vector findIntersection(Ray ray, RayTracer scene) {
         boolean isIntersect = true;
 
         // calculating the triangle plane
-        Vector vec1 = vertices[1].minus(vertices[0]);
-        Vector vec2 = vertices[2].minus(vertices[0]);
-        Vector planeN = vec1.cross(vec2).direction();
+        Vector planeN = getNormalVector(null);
         double offset = - (vertices[0].dot(planeN));
 
         Plane trgPlane = new Plane(planeN, offset, -1);
-        double[] t = trgPlane.findIntersection(ray, scene);
-        if (t == null) {
-            return null;
-        }
+        Vector p = trgPlane.findIntersection(ray, scene);
 
         // checking intersection with triangle
         Vector p0 = scene.getCamera().getPosition();
-        Vector p = ray.getStart().plus(ray.getDir().scale(t[0]));
         for (int i = 0; i < 3; i++) {
             // V1 = T1 - p0
             Vector v1 = vertices[i%3].minus(p0);
@@ -46,7 +40,7 @@ public class Triangle implements Surface {
         }
 
         if (isIntersect) {
-            return t;
+            return p;
         }
         else {
             return null;
@@ -59,5 +53,9 @@ public class Triangle implements Surface {
         Vector planeN = vec1.cross(vec2).direction();
 
         return planeN;
+    }
+
+    public int getMaterialIndex() {
+        return mat_idx;
     }
 }

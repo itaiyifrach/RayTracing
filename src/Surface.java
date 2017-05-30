@@ -3,7 +3,9 @@
  */
 public interface Surface {
 
-    double[] findIntersection(Ray ray, RayTracer scene);
+    Vector findIntersection(Ray ray, RayTracer scene);
 
     Vector getNormalVector(Vector vec);
+
+    int getMaterialIndex();
 }
