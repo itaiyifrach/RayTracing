@@ -14,4 +14,24 @@ public class Material {
         this.phong = phong;
         this.trans = trans;
     }
+
+    public Vector getDiff() {
+        return diff;
+    }
+
+    public Vector getSpec() {
+        return spec;
+    }
+
+    public Vector getRefl() {
+        return refl;
+    }
+
+    public float getPhong() {
+        return phong;
+    }
+
+    public float getTrans() {
+        return trans;
+    }
 }

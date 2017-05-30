@@ -19,12 +19,14 @@ public class Sphere implements Surface {
         // t_ca = L * V
         double t_ca = L.dot(ray.getDirection());
         if (t_ca < 0) {     // no intersection
+            System.out.println("no inter 1");
             return null;
         }
 
         double d_2 = L.dot(L) - (t_ca * t_ca);
         double r_2 = radius * radius;
         if (d_2 > r_2) {    // no intersection
+            System.out.println("no inter 2");
             return null;
         }
 

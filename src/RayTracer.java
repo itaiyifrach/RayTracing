@@ -221,11 +221,15 @@ public class RayTracer {
         for (int i = 0; i < this.imageWidth; i++) {
             for (int j = 0; j < this.imageHeight; j++) {
                 Ray ray = Ray.constructRayThroughPixel(camera, i, j, imageWidth, imageHeight, pixelWidth, pixelHeight);
-                ray.printRay();
+                //ray.printRay();
                 // find intersection and find the closest intersection
                 mat_idx = getIntersection(ray);
                 // get color of pixel (i,j) using rbgData
-                
+                Material mat = materials.get(mat_idx - 1);
+                rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (256 * mat.getDiff().cartesian(0)));
+                rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (256 * mat.getDiff().cartesian(1)));
+                rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (256 * mat.getDiff().cartesian(2)));
+                //System.out.println("MAT INDEX = " + mat_idx);
             }
         }
 
@@ -286,19 +290,19 @@ public class RayTracer {
 
     public int getIntersection(Ray ray) {
         Vector p0 = new Vector(camera.getPosition());
-        int mat_idx;
-        double tempDist;
-        Vector hit = surfaces.get(0).findIntersection(ray, this);
-        double minDist = hit.distanceTo(p0);
-        mat_idx = surfaces.get(0).getMaterialIndex();
+        Vector hit;
+        int mat_idx = -1;
+        double tempDist, minDist = Double.POSITIVE_INFINITY;
 
         // searching for minimum intersection point, and saving the surface material index
         for (Surface surface : surfaces) {
             hit = surface.findIntersection(ray, this);
-            tempDist = hit.distanceTo(p0);
-            if (tempDist < minDist) {
-                minDist = tempDist;
-                mat_idx = surface.getMaterialIndex();
+            if (hit != null) {
+                tempDist = hit.distanceTo(p0);
+                if (tempDist < minDist || mat_idx == -1) {
+                    minDist = tempDist;
+                    mat_idx = surface.getMaterialIndex();
+                }
             }
         }
 
