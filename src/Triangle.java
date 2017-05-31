@@ -36,10 +36,12 @@ public class Triangle implements Surface {
 
             if (p.minus(p0).dot(N) < 0) {
                 isIntersect = false;
+                break;
             }
         }
 
         if (isIntersect) {
+            System.out.println("inters");
             return p;
         }
         else {
@@ -50,7 +52,7 @@ public class Triangle implements Surface {
     public Vector getNormalVector(Vector vec)  {
         Vector vec1 = vertices[1].minus(vertices[0]);
         Vector vec2 = vertices[2].minus(vertices[0]);
-        Vector planeN = vec1.cross(vec2).direction();
+        Vector planeN = vec1.cross(vec2);
 
         return planeN;
     }

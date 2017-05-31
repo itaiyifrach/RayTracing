@@ -27,7 +27,7 @@ public class Ray {
 
         // calculating direction vector (P - p0)
         Vector p0 = camera.getPosition();
-        Vector V = P.minus(p0).direction();
+        Vector V = (P.minus(p0)).direction();
 
         return new Ray(p0, V);
     }

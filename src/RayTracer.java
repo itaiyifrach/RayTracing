@@ -224,12 +224,18 @@ public class RayTracer {
                 //ray.printRay();
                 // find intersection and find the closest intersection
                 mat_idx = getIntersection(ray);
-                // get color of pixel (i,j) using rbgData
-                Material mat = materials.get(mat_idx - 1);
-                rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (256 * mat.getDiff().cartesian(0)));
-                rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (256 * mat.getDiff().cartesian(1)));
-                rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (256 * mat.getDiff().cartesian(2)));
-                //System.out.println("MAT INDEX = " + mat_idx);
+                if (mat_idx == -1 ) {       // no intersection
+                    //System.out.println("no inter");
+                    continue;
+                }
+                else {
+                    // get color of pixel (i,j) using rbgData
+                    Material mat = materials.get(mat_idx - 1);
+                    rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (256 * mat.getDiff().cartesian(0)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (256 * mat.getDiff().cartesian(1)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (256 * mat.getDiff().cartesian(2)));
+                    //System.out.println("MAT INDEX = " + mat_idx);
+                }
             }
         }
 
