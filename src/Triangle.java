@@ -14,7 +14,7 @@ public class Triangle implements Surface {
 
         Vector vec1 = vertices[1].minus(vertices[0]);
         Vector vec2 = vertices[2].minus(vertices[0]);
-        this.N = vec1.cross(vec2);
+        this.N = (vec1.cross(vec2)).direction();
     }
 
     public Vector findIntersection(Ray ray, RayTracer scene) {
