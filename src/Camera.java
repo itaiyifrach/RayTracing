@@ -15,7 +15,7 @@ public class Camera {
         this.dist = dist;
         this.width = width;
 
-        Vector towards = look.minus(position);
+        Vector towards = look.minus(position).direction();
         this.right = towards.cross(up);
     }
 
