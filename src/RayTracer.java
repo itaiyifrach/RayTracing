@@ -117,7 +117,10 @@ public class RayTracer {
                     this.bg_color = new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2]));
                     this.sh_rays = Double.parseDouble(params[3]);
                     this.rec_max = Integer.parseInt(params[4]);
-                    this.ss_level = Integer.parseInt(params[5]);
+                    this.ss_level = 2; // default value is 2
+                    if (params.length == 6) {
+                        this.ss_level = Integer.parseInt(params[5]);
+                    }
 
                     System.out.println(String.format("Parsed general settings (line %d)", lineNum));
                 }

@@ -14,7 +14,9 @@ public class Camera {
         this.up = up;
         this.dist = dist;
         this.width = width;
-        this.right = look.cross(up);
+
+        Vector towards = look.minus(position);
+        this.right = towards.cross(up);
     }
 
     public Vector getScreenCenterPoint() {

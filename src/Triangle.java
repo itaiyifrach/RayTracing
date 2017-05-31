@@ -2,59 +2,61 @@
 
 public class Triangle implements Surface {
     private Vector[] vertices;
+    private Vector N;
     private int mat_idx;
 
     public Triangle(Vector pos1, Vector pos2, Vector pos3, int mat_idx) {
         this.vertices = new Vector[3];
-        this.vertices[0] = pos1;
-        this.vertices[1] = pos2;
-        this.vertices[2] = pos3;
+        this.vertices[0] = new Vector(pos1);
+        this.vertices[1] = new Vector(pos2);
+        this.vertices[2] = new Vector(pos3);
         this.mat_idx = mat_idx;
+
+        Vector vec1 = vertices[1].minus(vertices[0]);
+        Vector vec2 = vertices[2].minus(vertices[0]);
+        this.N = vec1.cross(vec2);
     }
 
     public Vector findIntersection(Ray ray, RayTracer scene) {
-        boolean isIntersect = true;
-
         // calculating the triangle plane
-        Vector planeN = getNormalVector(null);
-        double offset = - (vertices[0].dot(planeN));
+        double offset =  (vertices[0].dot(this.N));
+        Plane trgPlane = new Plane(this.N, offset, mat_idx);
 
-        Plane trgPlane = new Plane(planeN, offset, -1);
+        // finding intersection point with triangle plane
         Vector p = trgPlane.findIntersection(ray, scene);
-
-        // checking intersection with triangle
-        Vector p0 = scene.getCamera().getPosition();
-        for (int i = 0; i < 3; i++) {
-            // V1 = T1 - p0
-            Vector v1 = vertices[i%3].minus(p0);
-            // V2 = T2 - p0
-            Vector v2 = vertices[(i+1)%3].minus(p0);
-            // N1 = V1 x V2
-            Vector N = v1.cross(v2);
-            // Normalize N1
-            N = N.direction();
-
-            if (p.minus(p0).dot(N) < 0) {
-                isIntersect = false;
-                break;
-            }
-        }
-
-        if (isIntersect) {
-            System.out.println("inters");
-            return p;
-        }
-        else {
+        if (p == null) {
             return null;
         }
+
+        // checking intersection point with triangle
+        // first edge
+        Vector edge1 = vertices[1].minus(vertices[0]);
+        Vector r1 = p.minus(vertices[0]);
+        Vector normal = edge1.cross(r1);
+        if (this.N.dot(normal) < 0) {
+            return null;
+        }
+        // second edge
+        Vector edge2 = vertices[2].minus(vertices[1]);
+        Vector r2 = p.minus(vertices[1]);
+        normal = edge2.cross(r2);
+        if (this.N.dot(normal) < 0) {
+            return null;
+        }
+        // third edge
+        Vector edge3 = vertices[0].minus(vertices[2]);
+        Vector r3 = p.minus(vertices[2]);
+        normal = edge3.cross(r3);
+        if (this.N.dot(normal) < 0) {
+            return null;
+        }
+
+        // point intersects the triangle
+        return p;
     }
 
     public Vector getNormalVector(Vector vec)  {
-        Vector vec1 = vertices[1].minus(vertices[0]);
-        Vector vec2 = vertices[2].minus(vertices[0]);
-        Vector planeN = vec1.cross(vec2);
-
-        return planeN;
+        return this.N;
     }
 
     public int getMaterialIndex() {
