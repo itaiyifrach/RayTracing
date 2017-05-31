@@ -182,9 +182,9 @@ public class RayTracer {
         // TODO: what should we check here??
         boolean isValid = true;
         //checking if #materials == #surfaces
-        if (this.materials.size() != this.surfaces.size()) {
-            isValid = false;
-        }
+//        if (this.materials.size() != this.surfaces.size()) {
+//            isValid = false;
+//        }
 
         if (isValid) {
             System.out.println("Finished parsing scene file " + sceneFileName);

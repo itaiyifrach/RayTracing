@@ -19,7 +19,7 @@ public class Triangle implements Surface {
 
     public Vector findIntersection(Ray ray, RayTracer scene) {
         // calculating the triangle plane
-        double offset =  (vertices[0].dot(this.N));
+        double offset =  vertices[0].dot(this.N);
         Plane trgPlane = new Plane(this.N, offset, mat_idx);
 
         // finding intersection point with triangle plane
