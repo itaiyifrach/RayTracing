@@ -16,10 +16,10 @@ public class Ray {
         double moveX = (imageWidth / 2 - i) * pixelWidth;
         double moveY = (imageHeight / 2 - j) * pixelHeight;
 
-        Vector vecX = camera.getRight().direction();
+        Vector vecX = camera.getRightDirection();
         vecX = vecX.scale(moveX);
 
-        Vector vecY = camera.getUp().direction();
+        Vector vecY = camera.getUpDirection();
         vecY = vecY.scale(moveY);
 
         // calculating P new position from the center

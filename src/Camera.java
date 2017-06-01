@@ -4,26 +4,28 @@ public class Camera {
     private Vector position;
     private Vector look;
     private Vector up;
-    private Vector right;
-    private float dist;
-    private float width;
+    private Vector towardsDirection;
+    private Vector rightDirection;
+    private Vector upDirection;
+    private float screenDist;
+    private float screenWidth;
 
     public Camera(Vector position, Vector look, Vector up, float dist, float width) {
         this.position = position;
         this.look = look;
         this.up = up;
-        this.dist = dist;
-        this.width = width;
+        this.screenDist = dist;
+        this.screenWidth = width;
 
-        Vector towards = look.minus(position).direction();
-        this.right = towards.cross(up);
+        // calculating towards, right, and up directions of camera
+        this.towardsDirection = (look.minus(position)).direction();
+        this.rightDirection = (towardsDirection.cross(up)).direction();
+        this.upDirection = rightDirection.cross(towardsDirection);
     }
 
     public Vector getScreenCenterPoint() {
-        // calculating direction (look at point - p0)
-        Vector towards = look.minus(position).direction();
         // center point is (p0 + d*towards)
-        Vector center = position.plus(towards.scale(dist));
+        Vector center = position.plus(towardsDirection.scale(screenDist));
 
         return center;
     }
@@ -40,15 +42,23 @@ public class Camera {
         return up;
     }
 
-    public Vector getRight() {
-        return right;
+    public Vector getTowardsDirection() {
+        return towardsDirection;
     }
 
-    public float getDistance() {
-        return dist;
+    public Vector getRightDirection() {
+        return rightDirection;
     }
 
-    public float getWidth() {
-        return width;
+    public Vector getUpDirection() {
+        return upDirection;
+    }
+
+    public float getScreenDist() {
+        return screenDist;
+    }
+
+    public float getScreenWidth() {
+        return screenWidth;
     }
 }

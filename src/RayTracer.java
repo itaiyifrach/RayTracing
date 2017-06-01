@@ -218,7 +218,7 @@ public class RayTracer {
         // TODO: complete these loops...
         int mat_idx;
         double imageRatio = imageHeight / imageWidth;
-        double pixelWidth = camera.getWidth() / imageWidth;
+        double pixelWidth = camera.getScreenWidth() / imageWidth;
         double pixelHeight = imageRatio * pixelWidth;
 
         for (int i = 0; i < this.imageWidth; i++) {
@@ -227,9 +227,10 @@ public class RayTracer {
                 //ray.printRay();
                 // find intersection and find the closest intersection
                 mat_idx = getIntersection(ray);
-                if (mat_idx == -1 ) {       // no intersection
-                    //System.out.println("no inter");
-                    continue;
+                if (mat_idx == -1 ) {       // no intersection, setting background color
+                    rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (256 * bg_color.cartesian(0)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (256 * bg_color.cartesian(1)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (256 * bg_color.cartesian(2)));
                 }
                 else {
                     // get color of pixel (i,j) using rbgData
@@ -237,7 +238,6 @@ public class RayTracer {
                     rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (256 * mat.getDiff().cartesian(0)));
                     rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (256 * mat.getDiff().cartesian(1)));
                     rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (256 * mat.getDiff().cartesian(2)));
-                    //System.out.println("MAT INDEX = " + mat_idx);
                 }
             }
         }
@@ -274,7 +274,6 @@ public class RayTracer {
         } catch (IOException e) {
             System.out.println("ERROR SAVING FILE: " + e.getMessage());
         }
-
     }
 
     /*
