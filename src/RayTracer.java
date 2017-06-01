@@ -17,13 +17,15 @@ import javax.imageio.ImageIO;
  */
 public class RayTracer {
 
+    private Camera camera;
     public int imageWidth;
     public int imageHeight;
     private Vector bg_color;    // background color (r, g, b)
-    private int sh_rays;     // root number of shadow rays (N^2 rays will be shot)
+    private double sh_rays;     // root number of shadow rays (N^2 rays will be shot)
     private int rec_max;        // maximum number of recursions
     private int ss_level;       // super sampling level
-    private Camera camera;
+
+
     private ArrayList<Surface> surfaces;
     private ArrayList<Material> materials;
     private ArrayList<Light> lights;
@@ -115,7 +117,7 @@ public class RayTracer {
                 else if (code.equals("set"))
                 {
                     this.bg_color = new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2]));
-                    this.sh_rays = Integer.parseInt(params[3]);
+                    this.sh_rays = Double.parseDouble(params[3]);
                     this.rec_max = Integer.parseInt(params[4]);
                     this.ss_level = 2; // default value is 2
                     if (params.length == 6) {
@@ -258,10 +260,53 @@ public class RayTracer {
     }
 
 
+    public Vector getColor(Intersection intersection, Scene mSence){
+        int recursion_depth;
+        Vector rgbValue = new Vector(3);
 
+        for (Light light_source : mSence.getLights()) {
+            recursion_depth = this.rec_max;
+            Ray light_ray = new Ray(light_source.getLightPositionPoint(), intersection.getRayDirectionVector());
+            Intersection light_source_intersection = getIntersection(light_ray);
+            if(light_source_intersection != null){
+                recursion_depth = recursion_depth - 1;
+                rgbValue = this.getColor(light_source_intersection, recursion_depth, rgbValue);
+            }
+        }
+        return rgbValue;
+    }
+
+    private Vector getColor(Intersection intersection, int recursion_depth, Vector rgbValue){
+
+        Material relevantaterial = intersection.getSurface().getMaterial();
+
+        if(relevantaterial.getTrans() > 0 && recursion_depth > 0 && intersection != null){
+            Ray new_ray = new Ray(intersection.getHitPoint(), intersection.getRayDirectionVector());
+            Intersection next_inter_section = getIntersection(new_ray);
+
+            rgbValue = VectorArithmetic.plus(rgbValue, colorValueBySpecificSurface(0,relevantaterial));
+            if(next_inter_section == null){
+                return rgbValue;
+            }
+            else{
+                recursion_depth = recursion_depth -1;
+                return VectorArithmetic.plus(rgbValue, getColor(next_inter_section, recursion_depth, rgbValue));
+            }
+        }
+
+        else if (recursion_depth == 0 || intersection == null){
+            return rgbValue;
+        }else{
+            return null;
+        }
+
+    }
+
+    private Vector colorValueBySpecificSurface(int distance, Material material){
+        return null;
+    }
 
     //////////////////////// FUNCTIONS TO SAVE IMAGES IN PNG FORMAT //////////////////////////////////////////
-
     /*
      * Saves RGB data as an image in png format to the specified location.
      */
@@ -306,18 +351,22 @@ public class RayTracer {
      *
      */
     public Intersection getIntersection(Ray ray) {
-        Vector tempHit, hitPoint = null;
-        Vector p0 = ray.getStart();
-        Surface hitSurface = null;
-        double tempDist, minDist = Double.POSITIVE_INFINITY;
 
-        // searching for minimum intersection point
+        Vector tempHit, hitPoint = null;
+        Vector p0 = ray.getStartPoint();
+
+        Surface hitSurface = null;
+        double tempDistance, minDistance = Double.POSITIVE_INFINITY;
+
+        // searching for minimum intersection point, and saving the surface material index
         for (Surface surface : surfaces) {
-            tempHit = surface.findIntersection(ray, this);
+
+            tempHit = surface.findIntersection(ray);
+
             if (tempHit != null) {
-                tempDist = tempHit.distanceTo(p0);
-                if (tempDist < minDist || hitSurface == null) {
-                    minDist = tempDist;
+                tempDistance = VectorArithmetic.distanceTo(tempHit,p0);
+                if (tempDistance < minDistance || hitSurface == null) {
+                    minDistance = tempDistance;
                     hitSurface = surface;
                     hitPoint = new Vector(tempHit);
                 }
@@ -327,7 +376,7 @@ public class RayTracer {
             return null;
         }
         else {
-            return new Intersection(hitSurface, hitPoint);
+            return new Intersection(hitSurface, hitPoint, ray.getDirectionVector());
         }
     }
 

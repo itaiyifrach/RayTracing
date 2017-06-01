@@ -5,15 +5,17 @@ public class Intersection {
 
     private Surface hitSurface;
     private Vector hitPoint;
+    private Vector rayDirectionVector;
 
-    public Intersection(Surface hitSurface, Vector hitPoint)
+    public Intersection(Surface hitSurface, Vector hitPoint, Vector directionVector)
     {
         this.hitPoint = new Vector(hitPoint);
         this.hitSurface = hitSurface;
+        this.rayDirectionVector = directionVector;
     }
 
     public Ray getReflectionRay(Ray ray) {
-        Vector dir = ray.getDirection();
+        Vector dir = ray.getDirectionVector();
 
         // getting normal vector
         Vector N = hitSurface.getNormalVector(hitPoint);
@@ -34,14 +36,19 @@ public class Intersection {
         }
         Vector refDirection = (new Vector(result)).direction();
 
-        return new Ray(ray.getStart(), refDirection);
+        return new Ray(ray.getStartPoint(), refDirection);
     }
 
     public Surface getSurface() {
         return hitSurface;
     }
 
-    public Vector getPoint() {
+
+    public Vector getRayDirectionVector() {
+        return rayDirectionVector;
+    }
+
+    public Vector getHitPoint() {
         return hitPoint;
     }
 }

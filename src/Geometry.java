@@ -1,7 +1,8 @@
 
 
 public abstract class Geometry {
-    private Material material;
+
+    protected Material material;
     private int materialIndex;
 
     public Geometry(Material material) {
@@ -12,9 +13,11 @@ public abstract class Geometry {
     }
     public Geometry(){}
 
+    /*
     public Material getMaterial() {
         return material;
     }
+    */
     public void setMaterial(Material material) {
         this.material = material;
     }

@@ -1,37 +1,37 @@
 
 
 public class Material {
-    private Vector diff;
-    private Vector spec;
-    private Vector refl;
-    private float phong;
-    private float trans;
+    private Vector diffuseRGBValue;
+    private Vector specularRGBValue;
+    private Vector reflectionRGBValue;
+    private float phongValue;
+    private float transparencyValue;
 
     public Material(Vector diff, Vector spec, Vector refl, float phong, float trans) {
-        this.diff = diff;
-        this.spec = spec;
-        this.refl = refl;
-        this.phong = phong;
-        this.trans = trans;
+        this.diffuseRGBValue = diff;
+        this.specularRGBValue = spec;
+        this.reflectionRGBValue = refl;
+        this.phongValue = phong;
+        this.transparencyValue = trans;
     }
 
     public Vector getDiff() {
-        return diff;
+        return this.diffuseRGBValue;
     }
 
     public Vector getSpec() {
-        return spec;
+        return this.specularRGBValue;
     }
 
     public Vector getRefl() {
-        return refl;
+        return this.reflectionRGBValue;
     }
 
     public float getPhong() {
-        return phong;
+        return this.phongValue;
     }
 
     public float getTrans() {
-        return trans;
+        return this.transparencyValue;
     }
 }

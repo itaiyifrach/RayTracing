@@ -1,30 +1,50 @@
+/**
+ * this class extends  the abstract class - Geometry, represents Sphere object.
+ * Sphere object represented by 2-tuple : <Vector center_point, float radius>.
+ */
+public class Sphere extends Geometry implements Surface {
 
-
-public class Sphere implements Surface {
-    private Vector center;      // position of the sphere center (x, y, z)
-    private float radius;       // radius
-    private int mat_idx;        // material index
+    private Vector centerSpherePoint;      // position of the sphere center (x, y, z)
+    private float sphereRadius;       // radius
 
     public Sphere(Vector center, float radius, int mat_idx) {
-        this.center = center;
-        this.radius = radius;
-        this.mat_idx = mat_idx;
+        super(mat_idx);
+        this.centerSpherePoint = center;
+        this.sphereRadius = radius;
     }
 
-    public Vector findIntersection(Ray ray, RayTracer scene) {
+    /**
+     * Ray obj represents as 2-tuple (P_0 := startPoint, V := direction Vector),
+     * where each point P on the ray is a function of t at R - each point P = P_0 +tV;
+     *
+     * Ray: P = P0 + tV
+     * Sphere: |P - O|2 - r 2 = 0
+     * L = O - P0
+     * tca = L • V
+     * if (tca < 0) return 0
+     * d2 = L • L - tca2
+     *  if (d2 > r2) return 0
+     *  thc = sqrt(r2 - d2)
+     *  t = tca - thc and tca+ thc
+
+     * @param ray P = P0 + tV
+     * @return
+     */
+    public Vector findIntersection(Ray ray) {
         // using geometric method (not algebraic)
         // L = O - p0
-        Vector L = center.minus(scene.getCamera().getPosition());
+
+        Vector L = VectorArithmetic.minus(ray.getStartPoint(), centerSpherePoint);
 
         // t_ca = L * V
-        double t_ca = L.dot(ray.getDirection());
+        double t_ca = VectorArithmetic.dot(L, ray.getDirectionVector());
         if (t_ca < 0) {     // no intersection
             //System.out.println("no inter 1");
             return null;
         }
 
-        double d_2 = L.dot(L) - (t_ca * t_ca);
-        double r_2 = radius * radius;
+        double d_2 = VectorArithmetic.dot(L,L) - (t_ca * t_ca);
+        double r_2 = sphereRadius * sphereRadius;
         if (d_2 > r_2) {    // no intersection
             //System.out.println("no inter 2");
             return null;
@@ -41,7 +61,7 @@ public class Sphere implements Surface {
         // checking which point is closer to p0 (camera position)
         Vector p1 = ray.getPoint(t0);
         Vector p2 = ray.getPoint(t1);
-        if (p1.distanceTo(ray.getStart()) <=  p2.distanceTo(ray.getStart())) {
+        if (VectorArithmetic.distanceTo(p1, ray.getStartPoint()) <=  VectorArithmetic.distanceTo(p2, ray.getStartPoint())) {
             return p1;
         }
         else {
@@ -51,14 +71,20 @@ public class Sphere implements Surface {
 
     public Vector getNormalVector(Vector vec)  {
         // N = P - O
-        Vector N = vec.minus(center);
+        Vector N = VectorArithmetic.minus(vec, centerSpherePoint);
         // N = (P - O) / ||P - O||
-        N = N.direction();
-
+        N = VectorArithmetic.Normalize(N);
         return N;
     }
 
+    @Override
     public int getMaterialIndex() {
-        return mat_idx;
+        return this.materialIndex();
     }
+
+    @Override
+    public Material getMaterial() {
+        return this.material;
+    }
+
 }

@@ -1,12 +1,12 @@
 
 
 public class Ray {
-    Vector start;
-    Vector direction;
+    Vector startPoint;
+    Vector directionVector;
 
     public Ray(Vector start, Vector direction) {
-        this.start = new Vector(start);
-        this.direction = new Vector(direction);
+        this.startPoint = new Vector(start);
+        this.directionVector = new Vector(direction);
     }
 
     public static Ray constructRayThroughPixel(Camera camera, int i, int j, int imageWidth, int imageHeight, double pixelWidth, double pixelHeight) {
@@ -14,18 +14,19 @@ public class Ray {
         double moveX = (imageWidth / 2 - i) * pixelWidth;
         double moveY = (imageHeight / 2 - j) * pixelHeight;
 
-        Vector vecX = camera.getRightDirection();
-        vecX = vecX.scale(moveX);
+        Vector _X_ = camera.getRightDirection();
+        _X_ = VectorArithmetic.scalarMultiplication(_X_, moveX);
 
-        Vector vecY = camera.getUpDirection();
-        vecY = vecY.scale(moveY);
+
+        Vector _Y_ = camera.getUpDirection();
+        _Y_ = VectorArithmetic.scalarMultiplication(_Y_, moveY);
 
         // calculating P new position from the center
-        P = P.plus(vecX).plus(vecY);
+        P = VectorArithmetic.plus(P,VectorArithmetic.plus(_X_, _Y_));
 
         // calculating direction vector (P - p0)
         Vector p0 = camera.getPosition();
-        Vector V = (P.minus(p0)).direction();
+        Vector V = VectorArithmetic.Normalize(VectorArithmetic.minus(P, p0));
 
         return new Ray(p0, V);
     }
@@ -34,18 +35,18 @@ public class Ray {
      *  calculating (P = p0 + t*V)
      */
     public Vector getPoint(double t) {
-        return start.plus(direction.scale(t));
+        return VectorArithmetic.plus(startPoint, VectorArithmetic.scalarMultiplication(directionVector, t));
     }
 
-    public Vector getStart() {
-        return start;
+    public Vector getStartPoint() {
+        return startPoint;
     }
 
-    public Vector getDirection() {
-        return direction;
+    public Vector getDirectionVector() {
+        return directionVector;
     }
 
     public void printRay() {
-        System.out.println(start.toString() + "+ t" + direction.toString());
+        System.out.println(startPoint.toString() + "+ t" + directionVector.toString());
     }
 }

@@ -1,41 +1,45 @@
 
 
 public class Camera {
-    private Vector position;
-    private Vector look;
+
+    private Vector positionPoint;
+    private Vector lookAtPointVector;
     private Vector up;
     private Vector towardsDirection;
     private Vector rightDirection;
-    private Vector upDirection;
-    private float screenDist;
+    private Vector upDirectionVector;
+    private float screenDistance;
     private float screenWidth;
 
-    public Camera(Vector position, Vector look, Vector up, float dist, float width) {
-        this.position = position;
-        this.look = look;
+    public Camera(Vector position, Vector lookAtPoint, Vector up, float dist, float width) {
+        this.positionPoint = position;
+        this.lookAtPointVector = lookAtPoint;
         this.up = up;
-        this.screenDist = dist;
+        this.screenDistance = dist;
         this.screenWidth = width;
 
-        // calculating towards, right, and up directions of camera
-        this.towardsDirection = (look.minus(position)).direction();
-        this.rightDirection = (towardsDirection.cross(up)).direction();
-        this.upDirection = rightDirection.cross(towardsDirection);
+        // calculating towards, right, and up directions of camera and fixed upDirection if we need;
+        this.towardsDirection = VectorArithmetic.minus(lookAtPointVector, positionPoint).direction();
+        this.rightDirection = VectorArithmetic.cross(towardsDirection, up).direction();
+        this.upDirectionVector = VectorArithmetic.cross(rightDirection, towardsDirection);
     }
 
+    /**
+     * // center point is (p0 + d*towards)
+     * @return Vector _Z_ represents the center point of camera screen, where _Z_ := _positionPoint_ + (screenDistance*_towardsDirection_);
+     */
     public Vector getScreenCenterPoint() {
-        // center point is (p0 + d*towards)
-        Vector center = position.plus(towardsDirection.scale(screenDist));
+        Vector centerPointVector = VectorArithmetic.plus(positionPoint, VectorArithmetic.scalarMultiplication(towardsDirection,screenDistance));
 
-        return center;
+        return centerPointVector;
     }
 
     public Vector getPosition() {
-        return position;
+        return positionPoint;
     }
 
-    public Vector getLook() {
-        return look;
+    public Vector getLookAtPointVector() {
+        return lookAtPointVector;
     }
 
     public Vector getUp() {
@@ -51,11 +55,11 @@ public class Camera {
     }
 
     public Vector getUpDirection() {
-        return upDirection;
+        return upDirectionVector;
     }
 
     public float getScreenDist() {
-        return screenDist;
+        return screenDistance;
     }
 
     public float getScreenWidth() {

@@ -1,43 +1,58 @@
 
+/**
+ * this class extends  the abstract class - Geometry, represents Plane object.
+ * Plane object represented by 2-tuple : <Vector center_point, float radius>.
+ */
+public class Plane extends Geometry implements Surface {
+    private Vector tPlaneNormal;
+    private double tPlaneOffset;
+    private Vector tPointOnPlane;
 
-public class Plane implements Surface {
-    private Vector position;
-    private double offset;
-    private Vector pointOnPlane;
-    private int mat_idx;
 
-    public Plane(Vector position, double offset, int mat_idx) {
-        this.position = new Vector(position);
-        this.offset = offset;
-        this.mat_idx = mat_idx;
+    public Plane(Vector planeNormal, double planeOffset, int matIndex) {
+        super(matIndex);
+        this.tPlaneNormal = new Vector(planeNormal);
+        this.tPlaneOffset = planeOffset;
 
-        double x = this.position.cartesian(0);
-        double y = this.position.cartesian(1);
-        double z = this.position.cartesian(2);
+        this.fixedThePlaneNormal(tPlaneNormal);
+    }
+
+    /**
+     * this method checks X, Y, X coordinates
+     * @param planeNormal
+     */
+    private void fixedThePlaneNormal(Vector planeNormal){
+
+        double x = planeNormal.cartesian(0);
+        double y = planeNormal.cartesian(1);
+        double z = planeNormal.cartesian(2);
+
         if (x != 0) {
-            this.pointOnPlane = new Vector(this.offset / x, 0, 0);
+            this.tPointOnPlane = new Vector(this.tPlaneOffset / x, 0, 0);
         }
         else if (y != 0) {
-            this.pointOnPlane = new Vector(0, this.offset / y, 0);
+            this.tPointOnPlane = new Vector(0, this.tPlaneOffset / y, 0);
         }
         else if (z != 0) {
-            this.pointOnPlane = new Vector(0, 0, this.offset / z);
+            this.tPointOnPlane = new Vector(0, 0, this.tPlaneOffset / z);
         }
     }
 
-    public Vector findIntersection(Ray ray, RayTracer scene) {
-        // Ray = p0 + tV
-        Vector p0 = new Vector(ray.getStart());
-        Vector V = new Vector(ray.getDirection());
 
-        if (V.dot(position) == 0) {
+    public Vector findIntersection(Ray ray) {
+        // Ray = p0 + tV
+        Vector p0 = new Vector(ray.getStartPoint());
+        Vector V = new Vector(ray.getDirectionVector());
+
+        if (VectorArithmetic.dot(V, tPlaneNormal) == 0) {
+            // its mean that Ray_|_planeNormal ans s.t. ray will never hit the plane !!!
             return null;
         }
 
-        Vector temp = pointOnPlane.minus(p0);
-        double temp1 = temp.dot(position);
+        Vector temp = VectorArithmetic.minus(p0, tPointOnPlane);
+        double temp1 = VectorArithmetic.dot(temp, tPlaneNormal);
         // V*N
-        double temp2 = V.dot(position);
+        double temp2 =  VectorArithmetic.dot(V, tPlaneNormal);
 
         double t = temp1 / temp2;
         if (t < 0) {
@@ -48,15 +63,18 @@ public class Plane implements Surface {
         }
     }
 
-    public Vector getNormalVector(Vector vec)  {
-        return position;
-    }
-
+    @Override
     public int getMaterialIndex() {
-        return mat_idx;
+        return this.materialIndex();
     }
 
-    public Vector getPointOnPlane() {
-        return pointOnPlane;
+    public Vector getNormalVector(Vector vec)  {
+        return tPlaneNormal;
     }
+
+    @Override
+    public Material getMaterial() {
+        return this.material;
+    }
+
 }
