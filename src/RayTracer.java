@@ -20,7 +20,7 @@ public class RayTracer {
     public int imageWidth;
     public int imageHeight;
     private Vector bg_color;    // background color (r, g, b)
-    private double sh_rays;     // root number of shadow rays (N^2 rays will be shot)
+    private int sh_rays;     // root number of shadow rays (N^2 rays will be shot)
     private int rec_max;        // maximum number of recursions
     private int ss_level;       // super sampling level
     private Camera camera;
@@ -115,7 +115,7 @@ public class RayTracer {
                 else if (code.equals("set"))
                 {
                     this.bg_color = new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2]));
-                    this.sh_rays = Double.parseDouble(params[3]);
+                    this.sh_rays = Integer.parseInt(params[3]);
                     this.rec_max = Integer.parseInt(params[4]);
                     this.ss_level = 2; // default value is 2
                     if (params.length == 6) {

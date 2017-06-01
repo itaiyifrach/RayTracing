@@ -15,15 +15,43 @@ public class Light {
         this.radius = radius;
     }
 
-    public Light[] getAreaLight(Vector hitPoint) {
+    public Light[] getAreaLight(Vector hitPoint, int sh_rays) {
         // get direction of light (the Normal of the area grid)
         Vector N = (hitPoint.minus(position)).direction();
         // get the offset on the Plane
         double offset = position.dot(N);
+        // constructing the plane
+        Plane lightPlane = new Plane(this.position, offset, -1);
+
 
         // TODO: compute the light grid
+        Vector rightDirection = (lightPlane.getPointOnPlane().minus(position)).direction();
+        Vector upDirection = rightDirection.cross(N);
 
-        return null;
+        Light lights[] = new Light[sh_rays*sh_rays];
+        double lightWidth = radius / sh_rays;
+        double lightHeight = lightWidth;
+
+        int count=0;
+        double moveRight, moveUp;
+        Vector vecX, vecY, pos;
+        //build point lights
+        for (int i = 0; i < radius; i++) {
+            for (int j = 0; j < radius; j++) {
+                moveRight = (radius / 2 - i) * lightWidth;
+                moveUp = (radius / 2 - j) * lightHeight;
+                vecX = rightDirection.scale(moveRight);
+                vecY = upDirection.scale(moveUp);
+
+                // TODO: random position
+                pos = position.plus(vecX).plus(vecY);
+
+                lights[count] = new Light(pos, color, spec, shadow, radius);
+                count++;
+            }
+        }
+
+        return lights;
     }
 
     public double computeSoftShadow(Light[] lights, Intersection hit, RayTracer scene) {

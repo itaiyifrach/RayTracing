@@ -55,4 +55,8 @@ public class Plane implements Surface {
     public int getMaterialIndex() {
         return mat_idx;
     }
+
+    public Vector getPointOnPlane() {
+        return pointOnPlane;
+    }
 }
