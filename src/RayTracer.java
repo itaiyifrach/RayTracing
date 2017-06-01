@@ -216,7 +216,7 @@ public class RayTracer {
         // Each of the red, green and blue components should be a byte, i.e. 0-255
 
         // TODO: complete these loops...
-        int mat_idx;
+        Intersection hit;
         double imageRatio = imageHeight / imageWidth;
         double pixelWidth = camera.getScreenWidth() / imageWidth;
         double pixelHeight = imageRatio * pixelWidth;
@@ -226,18 +226,19 @@ public class RayTracer {
                 Ray ray = Ray.constructRayThroughPixel(camera, i, j, imageWidth, imageHeight, pixelWidth, pixelHeight);
                 //ray.printRay();
                 // find intersection and find the closest intersection
-                mat_idx = getIntersection(ray);
-                if (mat_idx == -1 ) {       // no intersection, setting background color
-                    rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (256 * bg_color.cartesian(0)));
-                    rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (256 * bg_color.cartesian(1)));
-                    rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (256 * bg_color.cartesian(2)));
+                hit = getIntersection(ray);
+                if (hit == null) {       // no intersection, setting background color
+                    rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (255 * bg_color.cartesian(0)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (255 * bg_color.cartesian(1)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (255 * bg_color.cartesian(2)));
                 }
                 else {
                     // get color of pixel (i,j) using rbgData
+                    int mat_idx = hit.getSurface().getMaterialIndex();
                     Material mat = materials.get(mat_idx - 1);
-                    rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (256 * mat.getDiff().cartesian(0)));
-                    rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (256 * mat.getDiff().cartesian(1)));
-                    rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (256 * mat.getDiff().cartesian(2)));
+                    rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (255 * mat.getDiff().cartesian(0)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (255 * mat.getDiff().cartesian(1)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (255 * mat.getDiff().cartesian(2)));
                 }
             }
         }
@@ -296,25 +297,38 @@ public class RayTracer {
         public RayTracerException(String msg) {  super(msg); }
     }
 
-    public int getIntersection(Ray ray) {
-        Vector p0 = new Vector(camera.getPosition());
-        Vector hit;
-        int mat_idx = -1;
+
+    /**
+     *
+     * finding the intersection surface of the Ray in the scene
+     * Return Intersection object which includes the hit point and the hit surface
+     * if no there is no intersection at all, then return null
+     *
+     */
+    public Intersection getIntersection(Ray ray) {
+        Vector tempHit, hitPoint = null;
+        Vector p0 = ray.getStart();
+        Surface hitSurface = null;
         double tempDist, minDist = Double.POSITIVE_INFINITY;
 
         // searching for minimum intersection point, and saving the surface material index
         for (Surface surface : surfaces) {
-            hit = surface.findIntersection(ray, this);
-            if (hit != null) {
-                tempDist = hit.distanceTo(p0);
-                if (tempDist < minDist || mat_idx == -1) {
+            tempHit = surface.findIntersection(ray, this);
+            if (tempHit != null) {
+                tempDist = tempHit.distanceTo(p0);
+                if (tempDist < minDist || hitSurface == null) {
                     minDist = tempDist;
-                    mat_idx = surface.getMaterialIndex();
+                    hitSurface = surface;
+                    hitPoint = new Vector(tempHit);
                 }
             }
         }
-
-        return mat_idx;
+        if (hitSurface == null) {       // no intersection...
+            return null;
+        }
+        else {
+            return new Intersection(hitSurface, hitPoint);
+        }
     }
 
     // GETTERS:

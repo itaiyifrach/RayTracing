@@ -14,5 +14,7 @@ public class Light {
         this.shadow = shadow;
         this.radius = radius;
     }
+
+
 }
 

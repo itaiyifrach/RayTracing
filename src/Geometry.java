@@ -1,6 +1,5 @@
-/**
- * Created by oshriamir on 5/31/17.
- */
+
+
 public abstract class Geometry {
     private Material material;
     private int materialIndex;

@@ -1,8 +1,6 @@
-/**
- * Created by Admin on 29/05/2017.
- */
-public class Ray {
 
+
+public class Ray {
     Vector start;
     Vector direction;
 
