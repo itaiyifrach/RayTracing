@@ -311,7 +311,7 @@ public class RayTracer {
         Surface hitSurface = null;
         double tempDist, minDist = Double.POSITIVE_INFINITY;
 
-        // searching for minimum intersection point, and saving the surface material index
+        // searching for minimum intersection point
         for (Surface surface : surfaces) {
             tempHit = surface.findIntersection(ray, this);
             if (tempHit != null) {
