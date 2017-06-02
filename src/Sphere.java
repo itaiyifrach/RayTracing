@@ -33,7 +33,6 @@ public class Sphere extends Geometry implements Surface {
     public Vector findIntersection(Ray ray) {
         // using geometric method (not algebraic)
         // L = O - p0
-
         Vector L = VectorArithmetic.minus(ray.getStartPoint(), centerSpherePoint);
 
         // t_ca = L * V
@@ -50,7 +49,6 @@ public class Sphere extends Geometry implements Surface {
             return null;
         }
 
-        // two intersection points:
         // t_hc = sqrt(r^2 - d^2)
         double t_hc = Math.sqrt(r_2 - d_2);
 

@@ -80,8 +80,6 @@ public class Vector {
         return data[i];
     }
 
-    /*
-
     // return the inner product of this Vector a and b
     public double dot(Vector vec) {
         if (this.getLength() != vec.getLength())
@@ -165,8 +163,6 @@ public class Vector {
         return c;
     }
 
-
-
     // create and return a new object whose value is (this * factor)
     public Vector scale(double factor) {
         Vector c = new Vector(n);
@@ -181,8 +177,6 @@ public class Vector {
             throw new ArithmeticException("zero-vector has no direction");
         return this.scale(1.0 / this.norm());
     }
-    */
-
 
     // remove all methods until here !!!
 

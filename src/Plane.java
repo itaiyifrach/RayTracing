@@ -77,4 +77,7 @@ public class Plane extends Geometry implements Surface {
         return this.material;
     }
 
+    public Vector getPointOnPlane() {
+        return tPointOnPlane;
+    }
 }

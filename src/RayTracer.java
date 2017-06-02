@@ -21,7 +21,7 @@ public class RayTracer {
     public int imageWidth;
     public int imageHeight;
     private Vector bg_color;    // background color (r, g, b)
-    private double sh_rays;     // root number of shadow rays (N^2 rays will be shot)
+    private int sh_rays;     // root number of shadow rays (N^2 rays will be shot)
     private int rec_max;        // maximum number of recursions
     private int ss_level;       // super sampling level
 
@@ -117,7 +117,7 @@ public class RayTracer {
                 else if (code.equals("set"))
                 {
                     this.bg_color = new Vector(Double.parseDouble(params[0]), Double.parseDouble(params[1]), Double.parseDouble(params[2]));
-                    this.sh_rays = Double.parseDouble(params[3]);
+                    this.sh_rays = Integer.parseInt(params[3]);
                     this.rec_max = Integer.parseInt(params[4]);
                     this.ss_level = 2; // default value is 2
                     if (params.length == 6) {
@@ -223,6 +223,8 @@ public class RayTracer {
         double pixelWidth = camera.getScreenWidth() / imageWidth;
         double pixelHeight = imageRatio * pixelWidth;
 
+        double shadowValue;
+
         for (int i = 0; i < this.imageWidth; i++) {
             for (int j = 0; j < this.imageHeight; j++) {
                 Ray ray = Ray.constructRayThroughPixel(camera, i, j, imageWidth, imageHeight, pixelWidth, pixelHeight);
@@ -236,11 +238,13 @@ public class RayTracer {
                 }
                 else {
                     // get color of pixel (i,j) using rbgData
+                    shadowValue = getShadowValue(hit);
+                    System.out.println("SHADOW VAL = " + shadowValue);
                     int mat_idx = hit.getSurface().getMaterialIndex();
                     Material mat = materials.get(mat_idx - 1);
-                    rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (255 * mat.getDiff().cartesian(0)));
-                    rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (255 * mat.getDiff().cartesian(1)));
-                    rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (255 * mat.getDiff().cartesian(2)));
+                    rgbData[(j * this.imageWidth + i) * 3] = (byte) ((int) (255 * (mat.getDiff().cartesian(0) * shadowValue)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 1] = (byte) ((int) (255 * (mat.getDiff().cartesian(1) * shadowValue)));
+                    rgbData[(j * this.imageWidth + i) * 3 + 2] = (byte) ((int) (255 * (mat.getDiff().cartesian(2) * shadowValue)));
                 }
             }
         }
@@ -259,6 +263,60 @@ public class RayTracer {
 
     }
 
+    /**
+     *
+     * finding the intersection surface of the Ray in the scene
+     * Return Intersection object which includes the hit point and the hit surface
+     * if no there is no intersection at all, then return null
+     *
+     */
+    public Intersection getIntersection(Ray ray) {
+
+        Vector tempHit, hitPoint = null;
+        Vector p0 = ray.getStartPoint();
+
+        Surface hitSurface = null;
+        double tempDistance, minDistance = Double.POSITIVE_INFINITY;
+
+        // searching for minimum intersection point, and saving the surface material index
+        for (Surface surface : surfaces) {
+            tempHit = surface.findIntersection(ray);
+
+            if (tempHit != null) {
+                tempDistance = tempHit.distanceTo(p0);
+                if (tempDistance < minDistance || hitSurface == null) {
+                    minDistance = tempDistance;
+                    hitSurface = surface;
+                    hitPoint = new Vector(tempHit);
+                }
+            }
+        }
+        if (hitSurface == null) {       // no intersection...
+            return null;
+        }
+        else {
+            return new Intersection(hitSurface, hitPoint, ray.getDirectionVector());
+        }
+    }
+
+    private double getShadowValue(Intersection hit) {
+        double result = 0, temp;
+
+        for (Light light: this.lights) {
+            // getting the area light grid according number of shadow rays
+            Light[] lightsGrid = light.getAreaLight(hit.getHitPoint(), this.sh_rays);
+            // computing the shadow value at hit point
+            temp = light.computeSoftShadow(lightsGrid, hit, this);
+            // TODO: check how to calculate the shadow value on hit point, by all lights. I currently do multiplication
+            if (result == 0) {
+                result = temp;
+            } else {
+                result *= temp;
+            }
+        }
+
+        return result;
+    }
 
     public Vector getColor(Intersection intersection, Scene mSence){
         int recursion_depth;
@@ -340,44 +398,6 @@ public class RayTracer {
 
     public static class RayTracerException extends Exception {
         public RayTracerException(String msg) {  super(msg); }
-    }
-
-
-    /**
-     *
-     * finding the intersection surface of the Ray in the scene
-     * Return Intersection object which includes the hit point and the hit surface
-     * if no there is no intersection at all, then return null
-     *
-     */
-    public Intersection getIntersection(Ray ray) {
-
-        Vector tempHit, hitPoint = null;
-        Vector p0 = ray.getStartPoint();
-
-        Surface hitSurface = null;
-        double tempDistance, minDistance = Double.POSITIVE_INFINITY;
-
-        // searching for minimum intersection point, and saving the surface material index
-        for (Surface surface : surfaces) {
-
-            tempHit = surface.findIntersection(ray);
-
-            if (tempHit != null) {
-                tempDistance = VectorArithmetic.distanceTo(tempHit,p0);
-                if (tempDistance < minDistance || hitSurface == null) {
-                    minDistance = tempDistance;
-                    hitSurface = surface;
-                    hitPoint = new Vector(tempHit);
-                }
-            }
-        }
-        if (hitSurface == null) {       // no intersection...
-            return null;
-        }
-        else {
-            return new Intersection(hitSurface, hitPoint, ray.getDirectionVector());
-        }
     }
 
     // GETTERS:
